@@ -1,4 +1,4 @@
-<?php namespace RainLab\Sitemap\Models;
+<?php namespace Winter\Sitemap\Models;
 
 use Url;
 use Model;
@@ -6,7 +6,7 @@ use Event;
 use Request;
 use DOMDocument;
 use Cms\Classes\Theme;
-use RainLab\Sitemap\Classes\DefinitionItem;
+use Winter\Sitemap\Classes\DefinitionItem;
 
 /**
  * Definition Model
@@ -26,7 +26,7 @@ class Definition extends Model
     /**
      * @var string The database table used by the model.
      */
-    public $table = 'rainlab_sitemap_definitions';
+    public $table = 'winter_sitemap_definitions';
 
     /**
      * @var array Guarded fields
@@ -50,7 +50,7 @@ class Definition extends Model
 
     /**
      * @var array The sitemap items.
-     * Items are objects of the \RainLab\Sitemap\Classes\DefinitionItem class.
+     * Items are objects of the \Winter\Sitemap\Classes\DefinitionItem class.
      */
     public $items;
 

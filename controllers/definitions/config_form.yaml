@@ -3,19 +3,19 @@
 # ===================================
 
 # Record name
-name: rainlab.sitemap::lang.item.definition
+name: winter.sitemap::lang.item.definition
 
 # Model Form Field configuration
-form: $/rainlab/sitemap/models/definition/fields.yaml
+form: $/winter/sitemap/models/definition/fields.yaml
 
 # Model Class name
-modelClass: RainLab\Sitemap\Models\Definition
+modelClass: Winter\Sitemap\Models\Definition
 
 # Default redirect location
 defaultRedirect: system/settings
 
 # Update page
 update:
-    title: rainlab.sitemap::lang.plugin.name
-    redirect: rainlab/sitemap/definitions
+    title: winter.sitemap::lang.plugin.name
+    redirect: winter/sitemap/definitions
     redirectClose: system/settings

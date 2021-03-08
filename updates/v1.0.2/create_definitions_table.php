@@ -1,7 +1,7 @@
-<?php namespace RainLab\Sitemap\Updates;
+<?php namespace Winter\Sitemap\Updates;
 
 use Schema;
-use October\Rain\Database\Updates\Migration;
+use Winter\Storm\Database\Updates\Migration;
 
 class CreateDefinitionsTable extends Migration
 {
