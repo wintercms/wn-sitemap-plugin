@@ -163,10 +163,10 @@
             return
         }
 
-        $.oc.stripeLoadIndicator.show()
+        $.wn.stripeLoadIndicator.show()
         this.$popupForm.request('onGetItemTypeInfo')
             .always(function(){
-                $.oc.stripeLoadIndicator.hide()
+                $.wn.stripeLoadIndicator.hide()
             })
             .done(function(data){
                 self.typeInfo[type] = data.sitemapItemTypeInfo
@@ -296,7 +296,7 @@
 
                     if (typeInfo[typeInfoProperty] !== undefined) {
 
-                        $.oc.flashMsg({
+                        $.wn.flashMsg({
                             class: 'error',
                             text: self.$popupForm.attr('data-message-'+propertyName+'-required')
                         })
@@ -340,7 +340,7 @@
         }
 
         if (data.type == 'url' && $.trim(data.url).length == 0) {
-            $.oc.flashMsg({
+            $.wn.flashMsg({
                 class: 'error',
                 text: self.$popupForm.data('messageUrlRequired')
             })

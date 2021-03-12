@@ -53,7 +53,7 @@
     }
 
     $(document).ready(function(){
-        $.oc.sitemapDefinitions = new SitemapDefinitions()
+        $.wn.sitemapDefinitions = new SitemapDefinitions()
     })
 
 }(window.jQuery);
