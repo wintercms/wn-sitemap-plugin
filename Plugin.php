@@ -21,7 +21,8 @@ class Plugin extends PluginBase
             'description' => 'winter.sitemap::lang.plugin.description',
             'author'      => 'Alexey Bobkov, Samuel Georges',
             'icon'        => 'icon-sitemap',
-            'homepage'    => 'https://github.com/wintercms/wn-sitemap-plugin'
+            'homepage'    => 'https://github.com/wintercms/wn-sitemap-plugin',
+            'replaces'    => 'RainLab.Sitemap'
         ];
     }
 
