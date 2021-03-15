@@ -30,7 +30,7 @@ class Definitions extends Controller
     {
         parent::__construct();
 
-        BackendMenu::setContext('Winter CMS.System', 'system', 'settings');
+        BackendMenu::setContext('Winter.System', 'system', 'settings');
         SettingsManager::setContext('Winter.Sitemap', 'definitions');
 
         $this->addJs('/modules/backend/assets/js/october.treeview.js', 'core');
