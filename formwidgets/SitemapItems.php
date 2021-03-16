@@ -1,12 +1,12 @@
-<?php namespace RainLab\Sitemap\FormWidgets;
+<?php namespace Winter\Sitemap\FormWidgets;
 
-use RainLab\Sitemap\Classes\DefinitionItem as SitemapItem;
+use Winter\Sitemap\Classes\DefinitionItem as SitemapItem;
 use Backend\Classes\FormWidgetBase;
 
 /**
  * Sitemap items widget.
  *
- * @package october\backend
+ * @package winter\backend
  * @author Alexey Bobkov, Samuel Georges
  */
 class SitemapItems extends FormWidgetBase
@@ -19,11 +19,11 @@ class SitemapItems extends FormWidgetBase
      */
     protected $defaultAlias = 'sitemapitems';
 
-    public $referenceRequiredMessage = 'rainlab.sitemap::lang.item.reference_required';
+    public $referenceRequiredMessage = 'winter.sitemap::lang.item.reference_required';
 
-    public $urlRequiredMessage = 'rainlab.sitemap::lang.item.url_required';
+    public $urlRequiredMessage = 'winter.sitemap::lang.item.url_required';
 
-    public $cmsPageRequiredMessage = 'rainlab.sitemap::lang.item.cms_page_required';
+    public $cmsPageRequiredMessage = 'winter.sitemap::lang.item.cms_page_required';
 
     /**
      * {@inheritDoc}
@@ -60,7 +60,7 @@ class SitemapItems extends FormWidgetBase
 
         $this->vars['emptyItem'] = $emptyItem;
 
-        $widgetConfig = $this->makeConfig('$/rainlab/sitemap/classes/definitionitem/fields.yaml');
+        $widgetConfig = $this->makeConfig('$/winter/sitemap/classes/definitionitem/fields.yaml');
         $widgetConfig->model = $sitemapItem;
         $widgetConfig->alias = $this->alias.'SitemapItem';
 
@@ -89,7 +89,7 @@ class SitemapItems extends FormWidgetBase
 
     /**
      * Returns the item reference description.
-     * @param \RainLab\Pages\Classes\SitemapItem $item Specifies the sitemap item
+     * @param \Winter\Pages\Classes\SitemapItem $item Specifies the sitemap item
      * @return string 
      */
     protected function getReferenceDescription($item)
@@ -115,7 +115,7 @@ class SitemapItems extends FormWidgetBase
             }
         }
         else {
-            $result = trans('rainlab.sitemap::lang.item.unknown_type');
+            $result = trans('winter.sitemap::lang.item.unknown_type');
         }
 
         return $result;
@@ -144,7 +144,7 @@ class SitemapItems extends FormWidgetBase
 
         $result = $iterator($typeOptionList, null);
         if (!strlen($result)) {
-            $result = trans('rainlab.sitemap::lang.item.unnamed');
+            $result = trans('winter.sitemap::lang.item.unnamed');
         }
 
         $result = preg_replace('|^\s+\/|', '', $result);
@@ -156,12 +156,12 @@ class SitemapItems extends FormWidgetBase
     {
         if (is_array($itemInfo)) {
             if (!array_key_exists('title', $itemInfo) || !strlen($itemInfo['title'])) {
-                return trans('rainlab.sitemap::lang.item.unnamed');
+                return trans('winter.sitemap::lang.item.unnamed');
             }
 
             return $itemInfo['title'];
         }
 
-        return strlen($itemInfo) ? $itemInfo : trans('rainlab.sitemap::lang.item.unnamed');
+        return strlen($itemInfo) ? $itemInfo : trans('winter.sitemap::lang.item.unnamed');
     }
 }

@@ -1,13 +1,13 @@
-<?php namespace RainLab\Sitemap\Updates;
+<?php namespace Winter\Sitemap\Updates;
 
 use Schema;
-use October\Rain\Database\Updates\Migration;
+use Winter\Storm\Database\Updates\Migration;
 
 class CreateDefinitionsTable extends Migration
 {
     public function up()
     {
-        Schema::create('rainlab_sitemap_definitions', function($table)
+        Schema::create('winter_sitemap_definitions', function($table)
         {
             $table->engine = 'InnoDB';
             $table->increments('id');
@@ -19,6 +19,6 @@ class CreateDefinitionsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('rainlab_sitemap_definitions');
+        Schema::dropIfExists('winter_sitemap_definitions');
     }
 }

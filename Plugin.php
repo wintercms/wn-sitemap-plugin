@@ -1,4 +1,4 @@
-<?php namespace RainLab\Sitemap;
+<?php namespace Winter\Sitemap;
 
 use Backend;
 use System\Classes\PluginBase;
@@ -17,11 +17,12 @@ class Plugin extends PluginBase
     public function pluginDetails()
     {
         return [
-            'name'        => 'rainlab.sitemap::lang.plugin.name',
-            'description' => 'rainlab.sitemap::lang.plugin.description',
+            'name'        => 'winter.sitemap::lang.plugin.name',
+            'description' => 'winter.sitemap::lang.plugin.description',
             'author'      => 'Alexey Bobkov, Samuel Georges',
             'icon'        => 'icon-sitemap',
-            'homepage'    => 'https://github.com/rainlab/sitemap-plugin'
+            'homepage'    => 'https://github.com/wintercms/wn-sitemap-plugin',
+            'replaces'    => 'RainLab.Sitemap'
         ];
     }
 
@@ -33,9 +34,9 @@ class Plugin extends PluginBase
     public function registerPermissions()
     {
         return [
-            'rainlab.sitemap.access_definitions' => [
-                'tab'   => 'rainlab.sitemap::lang.plugin.name',
-                'label' => 'rainlab.sitemap::lang.plugin.permissions.access_definitions',
+            'winter.sitemap.access_definitions' => [
+                'tab'   => 'winter.sitemap::lang.plugin.name',
+                'label' => 'winter.sitemap::lang.plugin.permissions.access_definitions',
             ],
         ];
     }
@@ -49,12 +50,12 @@ class Plugin extends PluginBase
     {
         return [
             'definitions' => [
-                'label'       => 'rainlab.sitemap::lang.plugin.name',
-                'description' => 'rainlab.sitemap::lang.plugin.description',
+                'label'       => 'winter.sitemap::lang.plugin.name',
+                'description' => 'winter.sitemap::lang.plugin.description',
                 'icon'        => 'icon-sitemap',
-                'url'         => Backend::url('rainlab/sitemap/definitions'),
+                'url'         => Backend::url('winter/sitemap/definitions'),
                 'category'    => SettingsManager::CATEGORY_CMS,
-                'permissions' => ['rainlab.sitemap.access_definitions'],
+                'permissions' => ['winter.sitemap.access_definitions'],
             ]
         ];
     }

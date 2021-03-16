@@ -1,4 +1,4 @@
-<?php namespace RainLab\Sitemap\Classes;
+<?php namespace Winter\Sitemap\Classes;
 
 use Event;
 use Illuminate\Database\Eloquent\Collection;
