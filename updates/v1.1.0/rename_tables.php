@@ -8,8 +8,9 @@ class RenameTables extends Migration
     public function up()
     {
         $from = 'rainlab_sitemap_definitions';
-        $to   = 'winter_sitemap_definitions';
-        if (Schema::hasTable($from)) {
+        $to = 'winter_sitemap_definitions';
+
+        if (Schema::hasTable($from) && !Schema::hasTable($to)) {
             Schema::rename($from, $to);
         }
     }
@@ -17,8 +18,9 @@ class RenameTables extends Migration
     public function down()
     {
         $from = 'winter_sitemap_definitions';
-        $to   = 'rainlab_sitemap_definitions';
-        if (Schema::hasTable($from)) {
+        $to = 'rainlab_sitemap_definitions';
+        
+        if (Schema::hasTable($from) && !Schema::hasTable($to)) {
             Schema::rename($from, $to);
         }
     }
