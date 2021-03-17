@@ -7,11 +7,11 @@ use Winter\Storm\Support\ClassLoader;
  * use the new Winter.Sitemap classes.
  */
 $aliases = [
-    Winter\Sitemap\Plugin::class                   => 'RainLab\Sitemap\Plugin',
-    Winter\Sitemap\Classes\DefinitionItem::class   => 'RainLab\Sitemap\Classes\DefinitionItem',
-    Winter\Sitemap\Controllers\Definitions::class  => 'RainLab\Sitemap\Controllers\Definitions',
-    Winter\Sitemap\FormWidgets\SitemapItems::class => 'RainLab\Sitemap\FormWidgets\SitemapItems',
-    Winter\Sitemap\Models\Definition::class        => 'RainLab\Sitemap\Models\Definition',
+    Winter\Sitemap\Plugin::class                   => RainLab\Sitemap\Plugin::class,
+    Winter\Sitemap\Classes\DefinitionItem::class   => RainLab\Sitemap\Classes\DefinitionItem::class,
+    Winter\Sitemap\Controllers\Definitions::class  => RainLab\Sitemap\Controllers\Definitions::class,
+    Winter\Sitemap\FormWidgets\SitemapItems::class => RainLab\Sitemap\FormWidgets\SitemapItems::class,
+    Winter\Sitemap\Models\Definition::class        => RainLab\Sitemap\Models\Definition::class,
 ];
 
 app(ClassLoader::class)->addAliases($aliases);
