@@ -19,7 +19,7 @@ class Plugin extends PluginBase
         return [
             'name'        => 'winter.sitemap::lang.plugin.name',
             'description' => 'winter.sitemap::lang.plugin.description',
-            'author'      => 'Alexey Bobkov, Samuel Georges',
+            'author'      => 'Winter CMS',
             'icon'        => 'icon-sitemap',
             'homepage'    => 'https://github.com/wintercms/wn-sitemap-plugin',
             'replaces'    => 'RainLab.Sitemap'
