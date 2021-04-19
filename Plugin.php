@@ -22,7 +22,7 @@ class Plugin extends PluginBase
             'author'      => 'Winter CMS',
             'icon'        => 'icon-sitemap',
             'homepage'    => 'https://github.com/wintercms/wn-sitemap-plugin',
-            'replaces'    => 'RainLab.Sitemap'
+            'replaces'    => ['RainLab.Sitemap' => '<= 1.0.9'],
         ];
     }
 
