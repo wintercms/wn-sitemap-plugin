@@ -101,7 +101,7 @@ class DefinitionItem
      */
     public function getTypeOptions()
     {
-        $result = ['url' => 'URL'];
+        $result = ['url' => trans('winter.sitemap::lang.item.url')];
         $apiResult = Event::fire('pages.menuitem.listTypes');
 
         if (is_array($apiResult)) {
