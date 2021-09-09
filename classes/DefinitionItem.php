@@ -2,6 +2,7 @@
 
 use Event;
 use Illuminate\Database\Eloquent\Collection;
+use Lang;
 
 /**
  * Item Model
@@ -101,7 +102,7 @@ class DefinitionItem
      */
     public function getTypeOptions()
     {
-        $result = ['url' => 'URL'];
+        $result = ['url' => Lang::get('winter.sitemap::lang.item.url')];
         $apiResult = Event::fire('pages.menuitem.listTypes');
 
         if (is_array($apiResult)) {
