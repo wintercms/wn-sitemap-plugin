@@ -24,7 +24,7 @@ Items of this type are links to a specific fixed URL. That could be an URL of an
 Items of this type refer to static pages. The static page should be selected in the **Reference** drop-down list described below.
 
 ###### All static pages {.subheader}
-Items of this type expand to create links to all static pages defined in the theme. 
+Items of this type expand to create links to all static pages defined in the theme.
 
 #### Custom item types
 Other plugins can supply new item types. For example, the [Blog plugin](https://github.com/wintercms/wn-blog-plugin) supplies two more types:
@@ -81,4 +81,26 @@ Array (
         )
     )
 )
+```
+
+##### Preventing creation of sitemap elements
+
+To prevent creating a sitemap element do:
+
+```php
+Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (string) &$frequency, (float) &$priority, (DefinitionItem) $item) {
+    if ($pageUrl === '/ignore-this-specific-page') {
+        return false;
+    }
+});
+```
+
+##### Extend created sitemap elements
+
+To extend a created sitemap element do:
+
+```php
+Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (string) $frequency, (float) $priority, (DefinitionItem) $item, (ElementNode) $urlElement) {
+    $url->appendChild($xml->createElement('bestcmsever', 'OctoberCMS');
+});
 ```
