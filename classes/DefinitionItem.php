@@ -1,8 +1,8 @@
-<?php namespace RainLab\Sitemap\Classes;
+<?php namespace Winter\Sitemap\Classes;
 
-use Model;
 use Event;
 use Illuminate\Database\Eloquent\Collection;
+use Lang;
 
 /**
  * Item Model
@@ -102,7 +102,7 @@ class DefinitionItem
      */
     public function getTypeOptions()
     {
-        $result = ['url' => 'URL'];
+        $result = ['url' => Lang::get('winter.sitemap::lang.item.url')];
         $apiResult = Event::fire('pages.menuitem.listTypes');
 
         if (is_array($apiResult)) {
@@ -147,7 +147,7 @@ class DefinitionItem
 
                         foreach ($value as $page) {
                             $baseName = $page->getBaseFileName();
-                            $pos = strrpos ($baseName, '/');
+                            $pos = strrpos($baseName, '/');
 
                             $dir = $pos !== false ? substr($baseName, 0, $pos).' / ' : null;
                             $cmsPages[$baseName] = strlen($page->title)
