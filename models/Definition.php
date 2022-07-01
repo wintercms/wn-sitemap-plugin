@@ -189,8 +189,8 @@ class Definition extends Model
         $xml = $this->makeXmlObject();
         $urlSet = $this->makeUrlSet();
         $mtime = $mtime ? date('c', $mtime) : date('c');
-        
-        
+
+
 
         $urlElement = $this->makeUrlElement(
             $xml,
@@ -216,28 +216,28 @@ class Definition extends Model
      * @param string $lastModified The ISO 8601 date that the item was last modified
      * @param string $frequency The change frequency of the item
      * @param float $priority The priority of the item from 0.1 to 1.0
-     * @param DefinitionItem $item The actual definition item object 
+     * @param DefinitionItem $item The actual definition item object
      */
     protected function makeUrlElement($xml, $pageUrl, $lastModified, $frequency, $priority, $item)
     {
         if ($this->urlCount >= self::MAX_URLS) {
             return false;
         }
-        
+
         /**
-         * @event rainlab.sitemap.beforeMakeUrlElement
+         * @event winter.sitemap.beforeMakeUrlElement
          * Provides an opportunity to prevent an element from being produced
          *
          * Example usage (stops the generation process):
          *
-         *     Event::listen('rainlab.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (string) &$frequency, (float) &$priority, (DefinitionItem) $item) {
+         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (string) &$frequency, (float) &$priority, (DefinitionItem) $item) {
          *         if ($pageUrl === '/ignore-this-specific-page') {
          *             return false;
          *         }
          *     });
          *
          */
-        if (Event::fire('rainlab.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, &$frequency, &$priority, $item], true) === false) {
+        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, &$frequency, &$priority, $item], true) === false) {
             return false;
         }
 
@@ -248,19 +248,19 @@ class Definition extends Model
         $url->appendChild($xml->createElement('lastmod', $lastModified));
         $url->appendChild($xml->createElement('changefreq', $frequency));
         $url->appendChild($xml->createElement('priority', $priority));
-        
+
         /**
-         * @event rainlab.sitemap.makeUrlElement
+         * @event winter.sitemap.makeUrlElement
          * Provides an opportunity to interact with a sitemap element after it has been generated.
          *
          * Example usage:
          *
-         *     Event::listen('rainlab.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (string) $frequency, (float) $priority, (DefinitionItem) $item, (ElementNode) $urlElement) {
+         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (string) $frequency, (float) $priority, (DefinitionItem) $item, (ElementNode) $urlElement) {
          *         $url->appendChild($xml->createElement('bestcmsever', 'OctoberCMS');
          *     });
          *
          */
-        Event::fire('rainlab.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $frequency, $priority, $item, $url]);
+        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $frequency, $priority, $item, $url]);
 
         return $url;
     }
