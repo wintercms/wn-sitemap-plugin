@@ -196,8 +196,6 @@ class Definition extends Model
             $xml,
             $url,
             $mtime,
-            $item->changefreq,
-            $item->priority,
             $item
         );
 
@@ -214,11 +212,9 @@ class Definition extends Model
      * @param DomDocument $xml The XML object to write to
      * @param string $pageUrl The URL to generate an item for
      * @param string $lastModified The ISO 8601 date that the item was last modified
-     * @param string $frequency The change frequency of the item
-     * @param float $priority The priority of the item from 0.1 to 1.0
      * @param DefinitionItem $item The actual definition item object
      */
-    protected function makeUrlElement($xml, $pageUrl, $lastModified, $frequency, $priority, $item)
+    protected function makeUrlElement($xml, $pageUrl, $lastModified, $item)
     {
         if ($this->urlCount >= self::MAX_URLS) {
             return false;
@@ -230,14 +226,14 @@ class Definition extends Model
          *
          * Example usage (stops the generation process):
          *
-         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (string) &$frequency, (float) &$priority, (DefinitionItem) $item) {
+         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $item) {
          *         if ($pageUrl === '/ignore-this-specific-page') {
          *             return false;
          *         }
          *     });
          *
          */
-        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, &$frequency, &$priority, $item], true) === false) {
+        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, $item], true) === false) {
             return false;
         }
 
@@ -246,8 +242,8 @@ class Definition extends Model
         $url = $xml->createElement('url');
         $url->appendChild($xml->createElement('loc', $pageUrl));
         $url->appendChild($xml->createElement('lastmod', $lastModified));
-        $url->appendChild($xml->createElement('changefreq', $frequency));
-        $url->appendChild($xml->createElement('priority', $priority));
+        $url->appendChild($xml->createElement('changefreq', $item->changefreq));
+        $url->appendChild($xml->createElement('priority', $item->priority));
 
         /**
          * @event winter.sitemap.makeUrlElement
@@ -255,12 +251,12 @@ class Definition extends Model
          *
          * Example usage:
          *
-         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (string) $frequency, (float) $priority, (DefinitionItem) $item, (ElementNode) $urlElement) {
+         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $item, (ElementNode) $urlElement) {
          *         $url->appendChild($xml->createElement('bestcmsever', 'OctoberCMS');
          *     });
          *
          */
-        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $frequency, $priority, $item, $url]);
+        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $item, $url]);
 
         return $url;
     }
