@@ -114,7 +114,7 @@ class Definition extends Model
                      * Single item
                      */
                     if (isset($itemInfo['url'])) {
-                        $this->addItemToSet($item, $itemInfo['url'], array_get($itemInfo, 'mtime'));
+                        $this->addItemToSet($item, $itemInfo['url'], array_get($itemInfo, 'mtime'), array_get($item, 'reference'));
                     }
 
                     /*
@@ -128,7 +128,7 @@ class Definition extends Model
                         {
                             foreach ($items as $item) {
                                 if (isset($item['url'])) {
-                                    $this->addItemToSet($parentItem, $item['url'], array_get($item, 'mtime'));
+                                    $this->addItemToSet($parentItem, $item['url'], array_get($item, 'mtime'), array_get($item, 'reference'));
                                 }
 
                                 if (isset($item['items'])) {
@@ -180,7 +180,7 @@ class Definition extends Model
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet($item, $url, $mtime = null)
+    protected function addItemToSet($item, $url, $mtime = null, $reference = null)
     {
         if ($mtime instanceof \DateTime) {
             $mtime = $mtime->getTimestamp();
@@ -196,7 +196,8 @@ class Definition extends Model
             $xml,
             $url,
             $mtime,
-            $item
+            $item,
+            $reference
         );
 
         if ($urlElement) {
@@ -213,8 +214,9 @@ class Definition extends Model
      * @param string $pageUrl The URL to generate an item for
      * @param string $lastModified The ISO 8601 date that the item was last modified
      * @param DefinitionItem $item The actual definition item object
+     * @param string $itemReference Reference to the item. Can be an ID or something similar
      */
-    protected function makeUrlElement($xml, $pageUrl, $lastModified, $item)
+    protected function makeUrlElement($xml, $pageUrl, $lastModified, $item, $itemReference = null)
     {
         if ($this->urlCount >= self::MAX_URLS) {
             return false;
@@ -226,24 +228,24 @@ class Definition extends Model
          *
          * Example usage (stops the generation process):
          *
-         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $item) {
+         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $item, (string) $itemReference) {
          *         if ($pageUrl === '/ignore-this-specific-page') {
          *             return false;
          *         }
          *     });
          *
          */
-        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, $item], true) === false) {
+        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, $item, $itemReference], true) === false) {
             return false;
         }
 
         $this->urlCount++;
 
-        $url = $xml->createElement('url');
-        $url->appendChild($xml->createElement('loc', $pageUrl));
-        $url->appendChild($xml->createElement('lastmod', $lastModified));
-        $url->appendChild($xml->createElement('changefreq', $item->changefreq));
-        $url->appendChild($xml->createElement('priority', $item->priority));
+        $urlElement = $xml->createElement('url');
+        $urlElement->appendChild($xml->createElement('loc', $pageUrl));
+        $urlElement->appendChild($xml->createElement('lastmod', $lastModified));
+        $urlElement->appendChild($xml->createElement('changefreq', $item->changefreq));
+        $urlElement->appendChild($xml->createElement('priority', $item->priority));
 
         /**
          * @event winter.sitemap.makeUrlElement
@@ -251,13 +253,13 @@ class Definition extends Model
          *
          * Example usage:
          *
-         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $item, (ElementNode) $urlElement) {
+         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $item, (string) $itemReference, (ElementNode) $urlElement) {
          *         $url->appendChild($xml->createElement('bestcmsever', 'OctoberCMS');
          *     });
          *
          */
-        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $item, $url]);
+        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $item, $itemReference, $urlElement]);
 
-        return $url;
+        return $urlElement;
     }
 }
