@@ -254,7 +254,7 @@ class Definition extends Model
          * Example usage:
          *
          *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $item, (string) $itemReference, (ElementNode) $urlElement) {
-         *         $url->appendChild($xml->createElement('bestcmsever', 'OctoberCMS');
+         *         $urlElement->appendChild($xml->createElement('bestcmsever', 'WinterCMS');
          *     });
          *
          */
