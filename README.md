@@ -101,6 +101,6 @@ To extend a created sitemap element do:
 
 ```php
 Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $item, (ElementNode) $urlElement) {
-    $url->appendChild($xml->createElement('bestcmsever', 'WinterCMS');
+    $urlElement->appendChild($xml->createElement('bestcmsever', 'WinterCMS');
 });
 ```
