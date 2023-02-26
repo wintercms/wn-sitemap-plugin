@@ -92,7 +92,7 @@ class Definition extends Model
              * Explicit URL
              */
             if ($item->type == 'url') {
-                $this->addItemToSet($item, Url::to($item->url));
+                $this->addItemToSet($item);
             }
             /*
              * Registered sitemap type
@@ -114,7 +114,7 @@ class Definition extends Model
                      * Single item
                      */
                     if (isset($itemInfo['url'])) {
-                        $this->addItemToSet($item, $itemInfo['url'], array_get($itemInfo, 'mtime'));
+                        $this->addItemToSet($item);
                     }
 
                     /*
@@ -128,7 +128,7 @@ class Definition extends Model
                         {
                             foreach ($items as $item) {
                                 if (isset($item['url'])) {
-                                    $this->addItemToSet($parentItem, $item['url'], array_get($item, 'mtime'));
+                                    $this->addItemToSet($parentItem, $item);
                                 }
 
                                 if (isset($item['items'])) {
@@ -180,25 +180,15 @@ class Definition extends Model
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet($item, $url, $mtime = null)
+    protected function addItemToSet($itemDefinition, $itemInfo=null)
     {
-        if ($mtime instanceof \DateTime) {
-            $mtime = $mtime->getTimestamp();
-        }
-
         $xml = $this->makeXmlObject();
         $urlSet = $this->makeUrlSet();
-        $mtime = $mtime ? date('c', $mtime) : date('c');
-        
-        
 
         $urlElement = $this->makeUrlElement(
             $xml,
-            $url,
-            $mtime,
-            $item->changefreq,
-            $item->priority,
-            $item
+            $itemDefinition,
+            $itemInfo,
         );
 
         if ($urlElement) {
@@ -212,56 +202,62 @@ class Definition extends Model
      * Build the URL element for the provided information
      *
      * @param DomDocument $xml The XML object to write to
-     * @param string $pageUrl The URL to generate an item for
-     * @param string $lastModified The ISO 8601 date that the item was last modified
-     * @param string $frequency The change frequency of the item
-     * @param float $priority The priority of the item from 0.1 to 1.0
-     * @param DefinitionItem $item The actual definition item object 
+     * @param DefinitionItem $itemDefinition The actual definition item object
+     * @param array $itemInfo The menuItem from the resolveMenuItem event
      */
-    protected function makeUrlElement($xml, $pageUrl, $lastModified, $frequency, $priority, $item)
+    protected function makeUrlElement($xml, $itemDefinition, $itemInfo=null)
     {
         if ($this->urlCount >= self::MAX_URLS) {
             return false;
         }
         
+        $pageUrl = $itemInfo ? $itemInfo['url'] : Url::to($itemDefinition->url);
+        $lastModified = $itemInfo ? array_get($itemInfo, 'mtime') : null;
+        $itemReference = $itemDefinition->reference ?: $itemDefinition->cmsPage;
+
+        if ($lastModified instanceof \DateTime) {
+            $lastModified = $lastModified->getTimestamp();
+        }
+        $lastModified = $lastModified ? date('c', $lastModified) : date('c');
+
         /**
-         * @event rainlab.sitemap.beforeMakeUrlElement
+         * @event winter.sitemap.beforeMakeUrlElement
          * Provides an opportunity to prevent an element from being produced
          *
          * Example usage (stops the generation process):
          *
-         *     Event::listen('rainlab.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (string) &$frequency, (float) &$priority, (DefinitionItem) $item) {
+         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $itemDefinition, (array) $itemInfo, (string) $itemReference) {
          *         if ($pageUrl === '/ignore-this-specific-page') {
          *             return false;
          *         }
          *     });
          *
          */
-        if (Event::fire('rainlab.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, &$frequency, &$priority, $item], true) === false) {
+        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, $itemDefinition, $itemInfo, $itemReference], true) === false) {
             return false;
         }
 
         $this->urlCount++;
 
-        $url = $xml->createElement('url');
-        $url->appendChild($xml->createElement('loc', $pageUrl));
-        $url->appendChild($xml->createElement('lastmod', $lastModified));
-        $url->appendChild($xml->createElement('changefreq', $frequency));
-        $url->appendChild($xml->createElement('priority', $priority));
-        
+        $urlElement = $xml->createElement('url');
+        $urlElement->appendChild($xml->createElement('loc', $pageUrl));
+        $urlElement->appendChild($xml->createElement('lastmod', $lastModified));
+        $urlElement->appendChild($xml->createElement('changefreq', $itemDefinition->changefreq));
+        $urlElement->appendChild($xml->createElement('priority', $itemDefinition->priority));
+
         /**
-         * @event rainlab.sitemap.makeUrlElement
+         * @event winter.sitemap.makeUrlElement
          * Provides an opportunity to interact with a sitemap element after it has been generated.
          *
          * Example usage:
          *
-         *     Event::listen('rainlab.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (string) $frequency, (float) $priority, (DefinitionItem) $item, (ElementNode) $urlElement) {
-         *         $url->appendChild($xml->createElement('bestcmsever', 'OctoberCMS');
+         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $itemDefinition, array $itemInfo, (string) $itemReference, (ElementNode) $urlElement) {
+         *         $urlElement->appendChild($xml->createElement('bestcmsever', 'WinterCMS');
          *     });
          *
          */
-        Event::fire('rainlab.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $frequency, $priority, $item, $url]);
+        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $itemDefinition, $itemInfo, $itemReference, $urlElement]);
 
-        return $url;
+        return $urlElement;
     }
 }
