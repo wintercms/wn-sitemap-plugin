@@ -114,7 +114,7 @@ class Definition extends Model
                      * Single item
                      */
                     if (isset($itemInfo['url'])) {
-                        $this->addItemToSet($item);
+                        $this->addItemToSet($item, $itemInfo);
                     }
 
                     /*
