@@ -1,4 +1,4 @@
-<?php namespace RainLab\Sitemap\Controllers;
+<?php namespace Winter\Sitemap\Controllers;
 
 use Url;
 use Backend;
@@ -8,9 +8,9 @@ use BackendMenu;
 use Cms\Classes\Theme;
 use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
-use RainLab\Sitemap\Models\Definition;
+use Winter\Sitemap\Models\Definition;
 use ApplicationException;
-use RainLab\Sitemap\Classes\DefinitionItem as SitemapItem;
+use Winter\Sitemap\Classes\DefinitionItem as SitemapItem;
 use Exception;
 
 /**
@@ -22,7 +22,7 @@ class Definitions extends Controller
         'Backend.Behaviors.FormController'
     ];
 
-    public $requiredPermissions = ['rainlab.sitemap.access_definitions'];
+    public $requiredPermissions = ['winter.sitemap.access_definitions'];
 
     public $formConfig = 'config_form.yaml';
 
@@ -30,11 +30,11 @@ class Definitions extends Controller
     {
         parent::__construct();
 
-        BackendMenu::setContext('October.System', 'system', 'settings');
-        SettingsManager::setContext('RainLab.Sitemap', 'definitions');
+        BackendMenu::setContext('Winter.System', 'system', 'settings');
+        SettingsManager::setContext('Winter.Sitemap', 'definitions');
 
-        $this->addJs('/modules/backend/assets/js/october.treeview.js', 'core');
-        $this->addJs('/plugins/rainlab/sitemap/assets/js/sitemap-definitions.js');
+        $this->addJs('/modules/backend/assets/js/winter.treeview.js', 'core');
+        $this->addJs('/plugins/winter/sitemap/assets/js/sitemap-definitions.js');
     }
 
     /**
@@ -106,7 +106,7 @@ class Definitions extends Controller
     protected function redirectToThemeSitemap($theme)
     {
         $model = Definition::firstOrCreate(['theme' => $theme->getDirName()]);
-        $updateUrl = sprintf('rainlab/sitemap/definitions/update/%s', $model->getKey());
+        $updateUrl = sprintf('winter/sitemap/definitions/update/%s', $model->getKey());
 
         return Backend::redirect($updateUrl);
     }
