@@ -174,8 +174,27 @@ class Definition extends Model
         $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
+
+        /**
+         * @event winter.sitemap.makeUrlSet
+         * Provides an opportunity to interact with a sitemap UrlSet after its creation
+         *
+         * Example usage:
+         *
+         *   Event::listen('winter.sitemap.makeUrlSet', function ((Definition) $definition, (DomDocument) $xml, (ElementNode) $urlSet) {
+         *       if (!str_contains(Request::server('HTTP_USER_AGENT', ''), 'Googlebot/')) {
+         *           // hack to force browser to properly render the XML sitemap
+         *           $nsUrl = 'xmlns:xhtml-namespace-definition-URL-here';
+         *       } else {
+         *           // Googlebot needs this URL
+         *           $nsUrl = 'http://www.w3.org/1999/xhtml';
+         *       }
+         *       $urlSet->setAttribute('xmlns:xhtml', $nsUrl);
+         *   });
+         *
+         */
+        Event::fire('winter.sitemap.makeUrlSet', [$this, $xml, $urlSet]);
 
         return $this->urlSet = $urlSet;
     }
@@ -210,7 +229,7 @@ class Definition extends Model
         if ($this->urlCount >= self::MAX_URLS) {
             return false;
         }
-        
+
         $pageUrl = $itemInfo ? $itemInfo['url'] : Url::to($itemDefinition->url);
         $lastModified = $itemInfo ? array_get($itemInfo, 'mtime') : null;
         $itemReference = $itemDefinition->reference ?: $itemDefinition->cmsPage;
