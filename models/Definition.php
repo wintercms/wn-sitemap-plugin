@@ -128,7 +128,7 @@ class Definition extends Model
                         {
                             foreach ($items as $item) {
                                 if (isset($item['url'])) {
-                                    $this->addItemToSet($parentItem, $item['url'], array_get($item, 'mtime'), array_get($item, 'reference'));
+                                    $this->addItemToSet($parentItem, $item['url'], array_get($item, 'mtime'), $parentItem->reference);
                                 }
 
                                 if (isset($item['items'])) {
