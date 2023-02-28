@@ -105,6 +105,34 @@ class Definition extends Model
                     continue;
                 }
 
+                /**
+                 * @event winter.sitemap.processMenuItems
+                 * Provides an opportunity to modify menuItems entries returned from the `pages.menuitem.resolveItem` event
+                 *
+                 * Example usage:
+                 *
+                 *   Event::listen('winter.sitemap.processMenuItems', function ($item, $url, $theme, $apiResult) {
+                 *       switch ($item->type) {
+                 *           case 'cms-page':
+                 *               return Classes\MLCmsPage::resolveMenuItem($item, $url, $theme);
+                 *           case 'blog-category':
+                 *           case 'all-blog-categories':
+                 *               return Classes\MLBlogCategoryModel::resolveMenuItem($item, $url, $theme);
+                 *           case 'blog-post':
+                 *           case 'xcategory-blog-posts':
+                 *           case 'all-blog-posts':
+                 *               return Classes\MLBlogPostModel::resolveMenuItem($item, $url, $theme);
+                 *           default:
+                 *               return false;
+                 *       }
+                 *   });
+                 *
+                 */
+                $processedResult = Event::fire('winter.sitemap.processMenuItems', [$item, $currentUrl, $theme, $apiResult], true);
+                if ($processedResult && is_array($processedResult)) {
+                    $apiResult = $processedResult;
+                }
+
                 foreach ($apiResult as $itemInfo) {
                     if (!is_array($itemInfo)) {
                         continue;
