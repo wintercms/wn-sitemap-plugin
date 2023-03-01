@@ -19,7 +19,7 @@
                 <link rel="stylesheet" href="https://unpkg.com/tachyons@4.6.1/css/tachyons.min.css"/>
             </head>
             <body class="ph3 pb3 mid-gray">
-                <header class="mw8 pv4 center">
+                <header class="pv4 center">
                     <div class="flex items-center">
                         <h1 class="ma0 mr2 f2 blue">Sitemap</h1>
                         <xsl:if test="sitemap:sitemapindex">
@@ -50,14 +50,14 @@
                         </xsl:choose>
                     </h2>
                     <p>
-                        This is an XML sitemap, meant for consumption by search engines.<br/>
+                        This is an XML sitemap, meant for consumption by search engines.
                         You can find more information about XML sitemaps on <a href="https://sitemaps.org" class="link blue">sitemaps.org</a>.
                     </p>
                 </header>
 
                 <xsl:apply-templates/>
 
-                <footer class="mw8 center pv4 tc">
+                <footer class="center pv4 tc">
                 </footer>
 
             </body>
@@ -66,7 +66,7 @@
 
 
     <xsl:template match="sitemap:sitemapindex">
-        <div class="mw8 center">
+        <div class="center">
             <div class="overflow-auto">
                 <table class="w-100 f6 b--silver ba bw1" cellspacing="0">
                     <thead class="bg-silver">
@@ -108,7 +108,7 @@
     </xsl:template>
 
     <xsl:template match="sitemap:urlset">
-        <div class="mw8 center">
+        <div class="center">
             <div class="overflow-auto">
                 <table class="w-100 f6 b--silver ba bw1" cellspacing="0">
                     <thead class="bg-silver">
@@ -177,10 +177,11 @@
             <xsl:value-of select="@href"/>
         </xsl:variable>
         <p>
-            <strong>Xhtml: </strong>
-            <a href="{$altloc}" class="mr2 link blue">
-                <xsl:value-of select="@href"/>
-            </a>
+            <xsl:if test="@rel">
+                <small class="dib mr2 ph2 pv1 tracked lh-solid white bg-silver br-pill">
+                    <xsl:value-of select="@rel"/>
+                </small>
+            </xsl:if>
 
             <xsl:if test="@hreflang">
                 <small class="dib mr2 ph1 pv1 tracked lh-solid white bg-silver br-pill">
@@ -188,11 +189,9 @@
                 </small>
             </xsl:if>
 
-            <xsl:if test="@rel">
-                <small class="dib mr2 ph2 pv1 tracked lh-solid white bg-silver br-pill">
-                    <xsl:value-of select="@rel"/>
-                </small>
-            </xsl:if>
+            <a href="{$altloc}" class="mr2 link blue">
+                <xsl:value-of select="@href"/>
+            </a>
 
             <xsl:if test="@media">
                 <small class="dib mr2 ph2 pv1 tracked lh-solid white bg-silver br-pill">
