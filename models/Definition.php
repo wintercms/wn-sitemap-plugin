@@ -216,14 +216,7 @@ class Definition extends Model
          * Example usage:
          *
          *   Event::listen('winter.sitemap.makeUrlSet', function ((Definition) $definition, (DomDocument) $xml, (ElementNode) $urlSet) {
-         *       if (!str_contains(Request::server('HTTP_USER_AGENT', ''), 'Googlebot/')) {
-         *           // hack to force browser to properly render the XML sitemap
-         *           $nsUrl = 'xmlns:xhtml-namespace-definition-URL-here';
-         *       } else {
-         *           // Googlebot needs this URL
-         *           $nsUrl = 'http://www.w3.org/1999/xhtml';
-         *       }
-         *       $urlSet->setAttribute('xmlns:xhtml', $nsUrl);
+         *       $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
          *   });
          *
          */
