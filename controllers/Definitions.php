@@ -81,7 +81,7 @@ class Definitions extends Controller
 
             $this->vars['theme'] = $theme;
             $this->vars['themeName'] = $theme->getConfigValue('name', $theme->getDirName());
-            $this->vars['sitemapUrl'] = Url::to('/sitemap.xml?preview');
+            $this->vars['sitemapUrl'] = Url::to('/sitemap.xml');
 
             return $result;
         }

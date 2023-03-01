@@ -199,6 +199,11 @@ class Definition extends Model
         }
 
         $xml = $this->makeXmlObject();
+        $xss = $xml->createProcessingInstruction( 'xml-stylesheet',
+            'type="text/xsl" href="plugins/winter/sitemap/assets/sitemap.xsl"'
+        );
+        $xml->appendChild($xss);
+
         $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
