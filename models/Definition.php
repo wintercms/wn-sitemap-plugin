@@ -112,19 +112,9 @@ class Definition extends Model
                  * Example usage:
                  *
                  *   Event::listen('winter.sitemap.processMenuItems', function ($item, $url, $theme, $apiResult) {
-                 *       switch ($item->type) {
-                 *           case 'cms-page':
-                 *               return Classes\MLCmsPage::resolveMenuItem($item, $url, $theme);
-                 *           case 'blog-category':
-                 *           case 'all-blog-categories':
-                 *               return Classes\MLBlogCategoryModel::resolveMenuItem($item, $url, $theme);
-                 *           case 'blog-post':
-                 *           case 'xcategory-blog-posts':
-                 *           case 'all-blog-posts':
-                 *               return Classes\MLBlogPostModel::resolveMenuItem($item, $url, $theme);
-                 *           default:
-                 *               return false;
-                 *       }
+                 *      if ($item->type === 'cms-page') {
+                 *          return massageResults($item, $url, $theme, $apiResult);
+                 *      }
                  *   });
                  *
                  */
