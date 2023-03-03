@@ -189,7 +189,7 @@ class Definition extends Model
         }
 
         $xml = $this->makeXmlObject();
-        $xss = $xml->createProcessingInstruction( 'xml-stylesheet',
+        $xss = $xml->createProcessingInstruction('xml-stylesheet',
             'type="text/xsl" href="' . Url::asset('/plugins/winter/sitemap/assets/sitemap.xsl') . '"'
         );
         $xml->appendChild($xss);
