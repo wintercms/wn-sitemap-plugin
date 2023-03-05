@@ -203,7 +203,7 @@ class Definition extends Model
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet($itemDefinition, $itemInfo=null)
+    protected function addItemToSet($itemDefinition, $itemInfo = null)
     {
         $xml = $this->makeXmlObject();
         $urlSet = $this->makeUrlSet();
