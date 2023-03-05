@@ -118,7 +118,7 @@ class Definition extends Model
                  *   });
                  *
                  */
-                $processedResult = Event::fire('winter.sitemap.processMenuItems', [$item, $currentUrl, $theme, $apiResult], true);
+                $processedResult = Event::fire('winter.sitemap.processMenuItems', [$item, $currentUrl, $theme, $apiResult]);
                 if ($processedResult && is_array($processedResult)) {
                     $apiResult = $processedResult;
                 }
@@ -221,30 +221,8 @@ class Definition extends Model
         $xml = $this->makeXmlObject();
         $urlSet = $this->makeUrlSet();
 
-        $urlElement = $this->makeUrlElement(
-            $xml,
-            $itemDefinition,
-            $itemInfo,
-        );
-
-        if ($urlElement) {
-            $urlSet->appendChild($urlElement);
-        }
-
-        return $urlSet;
-    }
-
-    /**
-     * Build the URL element for the provided information
-     *
-     * @param DomDocument $xml The XML object to write to
-     * @param DefinitionItem $itemDefinition The actual definition item object
-     * @param array $itemInfo The menuItem from the resolveMenuItem event
-     */
-    protected function makeUrlElement($xml, $itemDefinition, $itemInfo=null)
-    {
         if ($this->urlCount >= self::MAX_URLS) {
-            return false;
+            return;
         }
 
         $pageUrl = $itemInfo ? $itemInfo['url'] : Url::to($itemDefinition->url);
@@ -257,20 +235,20 @@ class Definition extends Model
         $lastModified = $lastModified ? date('c', $lastModified) : date('c');
 
         /**
-         * @event winter.sitemap.beforeMakeUrlElement
+         * @event winter.sitemap.beforeAddItemToSet
          * Provides an opportunity to prevent an element from being produced
          *
          * Example usage (stops the generation process):
          *
-         *     Event::listen('winter.sitemap.beforeMakeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $itemDefinition, (array) $itemInfo, (string) $itemReference) {
+         *     Event::listen('winter.sitemap.beforeAddItemToSet', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $itemDefinition, (array) $itemInfo, (string) $itemReference) {
          *         if ($pageUrl === '/ignore-this-specific-page') {
          *             return false;
          *         }
          *     });
          *
          */
-        if (Event::fire('winter.sitemap.beforeMakeUrlElement', [$this, $xml, &$pageUrl, &$lastModified, $itemDefinition, $itemInfo, $itemReference], true) === false) {
-            return false;
+        if (Event::fire('winter.sitemap.beforeAddItemToSet', [$this, $xml, &$pageUrl, &$lastModified, $itemDefinition, $itemInfo, $itemReference], true) === false) {
+            return;
         }
 
         $this->urlCount++;
@@ -281,19 +259,21 @@ class Definition extends Model
         $urlElement->appendChild($xml->createElement('changefreq', $itemDefinition->changefreq));
         $urlElement->appendChild($xml->createElement('priority', $itemDefinition->priority));
 
+        $urlSet->appendChild($urlElement);
+
         /**
-         * @event winter.sitemap.makeUrlElement
+         * @event winter.sitemap.addItemToSet
          * Provides an opportunity to interact with a sitemap element after it has been generated.
          *
          * Example usage:
          *
-         *     Event::listen('winter.sitemap.makeUrlElement', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $itemDefinition, array $itemInfo, (string) $itemReference, (ElementNode) $urlElement) {
+         *     Event::listen('winter.sitemap.addItemToSet', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $itemDefinition, array $itemInfo, (string) $itemReference, (ElementNode) $urlElement) {
          *         $urlElement->appendChild($xml->createElement('bestcmsever', 'WinterCMS');
          *     });
          *
          */
-        Event::fire('winter.sitemap.makeUrlElement', [$this, $xml, $pageUrl, $lastModified, $itemDefinition, $itemInfo, $itemReference, $urlElement]);
+        Event::fire('winter.sitemap.addItemToSet', [$this, $xml, $pageUrl, $lastModified, $itemDefinition, $itemInfo, $itemReference, $urlElement]);
 
-        return $urlElement;
+        return;
     }
 }
