@@ -1,11 +1,14 @@
-<?php namespace Winter\Sitemap\Models;
+<?php
 
-use Url;
-use Model;
-use Event;
-use Request;
-use DOMDocument;
+namespace Winter\Sitemap\Models;
+
 use Cms\Classes\Theme;
+use DOMDocument;
+use DOMElement;
+use Event;
+use Model;
+use Request;
+use Url;
 use Winter\Sitemap\Classes\DefinitionItem;
 
 /**
@@ -74,10 +77,13 @@ class Definition extends Model
         $this->items = DefinitionItem::initFromArray($this->data);
     }
 
-    public function generateSitemap()
+    /**
+     * Generate the sitemap's XML from the definition data
+     */
+    public function generateSitemap(): string
     {
         if (!$this->items) {
-            return;
+            return '';
         }
 
         $currentUrl = Request::path();
@@ -98,20 +104,25 @@ class Definition extends Model
              * Registered sitemap type
              */
             else {
-
+                /**
+                 * @NOTE:
+                 * - This passes (string, DefinititionItem, string, Theme)
+                 * - Winter.Pages passes (string, MenuItem, string, Theme)
+                 */
                 $apiResult = Event::fire('pages.menuitem.resolveItem', [$item->type, $item, $currentUrl, $theme]);
-
                 if (!is_array($apiResult)) {
                     continue;
                 }
 
+                // @TODO: Don't provide a separate event here, just hook into pages.menuitem.resolveItem with a higher priority to return localized data if necessary
+
                 /**
                  * @event winter.sitemap.processMenuItems
-                 * Provides an opportunity to modify menuItems entries returned from the `pages.menuitem.resolveItem` event
+                 * Provides an opportunity to modify menuItem data returned from the `pages.menuitem.resolveItem` event
                  *
                  * Example usage:
                  *
-                 *   Event::listen('winter.sitemap.processMenuItems', function ($item, $url, $theme, $apiResult) {
+                 *   Event::listen('winter.sitemap.processMenuItems', function (DefinitionItem $item, string $currentUrl, Theme $theme, array $apiResult) {
                  *      if ($item->type === 'cms-page') {
                  *          return massageResults($item, $url, $theme, $apiResult);
                  *      }
@@ -123,54 +134,51 @@ class Definition extends Model
                     $apiResult = $processedResult;
                 }
 
-                foreach ($apiResult as $itemInfo) {
-                    if (!is_array($itemInfo)) {
+                foreach ($apiResult as $menuItemInfo) {
+                    if (!is_array($menuItemInfo)) {
                         continue;
                     }
 
                     /*
                      * Single item
                      */
-                    if (isset($itemInfo['url'])) {
-                        $this->addItemToSet($item, $itemInfo);
+                    if (isset($menuItemInfo['url'])) {
+                        $this->addItemToSet($item, $menuItemInfo);
                     }
 
                     /*
                      * Multiple items
                      */
-                    if (isset($itemInfo['items'])) {
-
-                        $parentItem = $item;
-
-                        $itemIterator = function($items) use (&$itemIterator, $parentItem)
-                        {
-                            foreach ($items as $item) {
-                                if (isset($item['url'])) {
-                                    $this->addItemToSet($parentItem, $item);
+                    if (isset($menuItemInfo['items'])) {
+                        $menuItemIterator = function ($menuItems) use (&$menuItemIterator, $item) {
+                            foreach ($menuItems as $menuItem) {
+                                if (isset($menuItem['url'])) {
+                                    $this->addItemToSet($item, $menuItem);
                                 }
 
-                                if (isset($item['items'])) {
-                                    $itemIterator($item['items']);
+                                if (isset($menuItem['items'])) {
+                                    $menuItemIterator($menuItem['items']);
                                 }
                             }
                         };
 
-                        $itemIterator($itemInfo['items']);
+                        $menuItemIterator($menuItemInfo['items']);
                     }
                 }
-
             }
-
         }
 
-        $urlSet = $this->makeUrlSet();
-        $xml = $this->makeXmlObject();
+        $urlSet = $this->getUrlSet();
+        $xml = $this->getXmlObject();
         $xml->appendChild($urlSet);
 
         return $xml->saveXML();
     }
 
-    protected function makeXmlObject()
+    /**
+     * Gets the DomDocument object, creating it if it doesn't exist
+     */
+    protected function getXmlObject(): DOMDocument
     {
         if ($this->xmlObject !== null) {
             return $this->xmlObject;
@@ -178,22 +186,24 @@ class Definition extends Model
 
         $xml = new DOMDocument;
         $xml->encoding = 'UTF-8';
-
-        return $this->xmlObject = $xml;
-    }
-
-    protected function makeUrlSet()
-    {
-        if ($this->urlSet !== null) {
-            return $this->urlSet;
-        }
-
-        $xml = $this->makeXmlObject();
         $xss = $xml->createProcessingInstruction('xml-stylesheet',
             'type="text/xsl" href="' . Url::asset('/plugins/winter/sitemap/assets/sitemap.xsl') . '"'
         );
         $xml->appendChild($xss);
 
+        return $this->xmlObject = $xml;
+    }
+
+    /**
+     * Gets the urlset XML element, creating it if it doesn't exist
+     */
+    protected function getUrlSet(): DOMElement
+    {
+        if ($this->urlSet !== null) {
+            return $this->urlSet;
+        }
+
+        $xml = $this->getXmlObject();
         $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
@@ -203,23 +213,28 @@ class Definition extends Model
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet($itemDefinition, $itemInfo = null)
+    /**
+     * Adds the provided item to the sitemap's urlset DOMElement
+     */
+    protected function addItemToSet(DefinitionItem $item, ?array $itemInfo = null): void
     {
-        $xml = $this->makeXmlObject();
-        $urlSet = $this->makeUrlSet();
+        $xml = $this->getXmlObject();
+        $urlSet = $this->getUrlSet();
 
         if ($this->urlCount >= self::MAX_URLS) {
             return;
         }
 
-        $pageUrl = $itemInfo ? $itemInfo['url'] : Url::to($itemDefinition->url);
-        $lastModified = $itemInfo ? array_get($itemInfo, 'mtime') : null;
-        $itemReference = $itemDefinition->reference ?: $itemDefinition->cmsPage;
+        if (!isset($itemInfo['url']) {
+            $itemInfo['url'] = Url::to($item->url);
+        }
 
+        $lastModified = $itemInfo['mtime'] ?? null;
         if ($lastModified instanceof \DateTime) {
             $lastModified = $lastModified->getTimestamp();
         }
         $lastModified = $lastModified ? date('c', $lastModified) : date('c');
+        $itemInfo['lastModified'] = $lastModified;
 
         /**
          * @event winter.sitemap.beforeAddItem
@@ -227,24 +242,25 @@ class Definition extends Model
          *
          * Example usage (stops the generation process):
          *
-         *     Event::listen('winter.sitemap.beforeAddItemToSet', function ((Definition) $definition, (DomDocument) $xml, (string) &$pageUrl, (string) &$lastModified, (DefinitionItem) $itemDefinition, (array) $itemInfo, (string) $itemReference) {
-         *         if ($pageUrl === '/ignore-this-specific-page') {
+         *     Event::listen('winter.sitemap.beforeAddItem', function (DefinitionItem $item, array $itemInfo, Definition $definition, DOMDocument $xml, DOMElement $urlSet) {
+         *         if ($itemInfo['url'] === '/ignore-this-specific-page') {
          *             return false;
          *         }
          *     });
          *
          */
-        if (Event::fire('winter.sitemap.beforeAddItem', [$this, $xml, &$pageUrl, &$lastModified, $itemDefinition, $itemInfo, $itemReference], true) === false) {
+        if (Event::fire('winter.sitemap.beforeAddItem', [$item, $itemInfo, $this, $xml, $urlSet], true) === false) {
             return;
         }
 
         $this->urlCount++;
 
         $urlElement = $xml->createElement('url');
-        $urlElement->appendChild($xml->createElement('loc', $pageUrl));
-        $urlElement->appendChild($xml->createElement('lastmod', $lastModified));
-        $urlElement->appendChild($xml->createElement('changefreq', $itemDefinition->changefreq));
-        $urlElement->appendChild($xml->createElement('priority', $itemDefinition->priority));
+
+        $urlElement->appendChild($xml->createElement('loc', $itemInfo['url']));
+        $urlElement->appendChild($xml->createElement('lastmod', $itemInfo['lastModified']));
+        $urlElement->appendChild($xml->createElement('changefreq', $item->changefreq));
+        $urlElement->appendChild($xml->createElement('priority', $item->priority));
 
         $urlSet->appendChild($urlElement);
 
@@ -254,12 +270,12 @@ class Definition extends Model
          *
          * Example usage:
          *
-         *     Event::listen('winter.sitemap.addItemToSet', function ((Definition) $definition, (DomDocument) $xml, (string) $pageUrl, (string) $lastModified, (DefinitionItem) $itemDefinition, array $itemInfo, (string) $itemReference, (ElementNode) $urlElement) {
+         *     Event::listen('winter.sitemap.addItem', function (DefinitionItem $item, array $itemInfo, Definition $definition, DOMDocument $xml, DOMElement $urlSet, DOMElement $itemElement) {
          *         $urlElement->appendChild($xml->createElement('bestcmsever', 'WinterCMS');
          *     });
          *
          */
-        Event::fire('winter.sitemap.addItem', [$this, $xml, $pageUrl, $lastModified, $itemDefinition, $itemInfo, $itemReference, $urlElement]);
+        Event::fire('winter.sitemap.addItem', [$item, $itemInfo, $this, $xml, $urlSet, $urlElement]);
 
         return;
     }
