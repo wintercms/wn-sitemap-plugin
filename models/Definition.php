@@ -91,7 +91,7 @@ class Definition extends Model
             /*
              * Explicit URL
              */
-            if ($item->type == 'url') {
+            if ($item->type === 'url') {
                 $this->addItemToSet($item);
             }
             /*
