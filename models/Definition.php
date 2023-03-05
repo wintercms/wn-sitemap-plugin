@@ -200,19 +200,6 @@ class Definition extends Model
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
 
-        /**
-         * @event winter.sitemap.makeUrlSet
-         * Provides an opportunity to interact with a sitemap UrlSet after its creation
-         *
-         * Example usage:
-         *
-         *   Event::listen('winter.sitemap.makeUrlSet', function ((Definition) $definition, (DomDocument) $xml, (ElementNode) $urlSet) {
-         *       $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
-         *   });
-         *
-         */
-        Event::fire('winter.sitemap.makeUrlSet', [$this, $xml, $urlSet]);
-
         return $this->urlSet = $urlSet;
     }
 
@@ -235,7 +222,7 @@ class Definition extends Model
         $lastModified = $lastModified ? date('c', $lastModified) : date('c');
 
         /**
-         * @event winter.sitemap.beforeAddItemToSet
+         * @event winter.sitemap.beforeAddItem
          * Provides an opportunity to prevent an element from being produced
          *
          * Example usage (stops the generation process):
@@ -247,7 +234,7 @@ class Definition extends Model
          *     });
          *
          */
-        if (Event::fire('winter.sitemap.beforeAddItemToSet', [$this, $xml, &$pageUrl, &$lastModified, $itemDefinition, $itemInfo, $itemReference], true) === false) {
+        if (Event::fire('winter.sitemap.beforeAddItem', [$this, $xml, &$pageUrl, &$lastModified, $itemDefinition, $itemInfo, $itemReference], true) === false) {
             return;
         }
 
@@ -262,7 +249,7 @@ class Definition extends Model
         $urlSet->appendChild($urlElement);
 
         /**
-         * @event winter.sitemap.addItemToSet
+         * @event winter.sitemap.addItem
          * Provides an opportunity to interact with a sitemap element after it has been generated.
          *
          * Example usage:
@@ -272,7 +259,7 @@ class Definition extends Model
          *     });
          *
          */
-        Event::fire('winter.sitemap.addItemToSet', [$this, $xml, $pageUrl, $lastModified, $itemDefinition, $itemInfo, $itemReference, $urlElement]);
+        Event::fire('winter.sitemap.addItem', [$this, $xml, $pageUrl, $lastModified, $itemDefinition, $itemInfo, $itemReference, $urlElement]);
 
         return;
     }
