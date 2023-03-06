@@ -225,7 +225,7 @@ class Definition extends Model
             return;
         }
 
-        if (!isset($itemInfo['url']) {
+        if (!isset($itemInfo['url'])) {
             $itemInfo['url'] = Url::to($item->url);
         }
 
