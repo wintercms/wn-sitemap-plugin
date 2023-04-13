@@ -1,7 +1,8 @@
-<?php namespace Winter\Sitemap\Classes;
+<?php
+
+namespace Winter\Sitemap\Classes;
 
 use Event;
-use Illuminate\Database\Eloquent\Collection;
 use Lang;
 
 /**
@@ -22,33 +23,33 @@ class DefinitionItem
     /**
      * @var boolean Determines whether the auto-generated items could have subitems.
      */
-    public $nesting;
+    public $nesting = false;
 
     /**
      * @var string Specifies the item type - URL, static page, etc.
      */
-    public $type;
+    public $type = 'url';
 
     /**
-     * @var string Specifies the URL for URL-type items.
+     * @var string|null Specifies the URL for URL-type items.
      */
-    public $url;
+    public $url = null;
 
     /**
-     * @var string Specifies the item code.
+     * @var string|null Specifies the item code.
      */
-    public $code;
+    public $code = null;
 
     /**
-     * @var string Specifies the object identifier the item refers to.
+     * @var string|null Specifies the object identifier the item refers to.
      * The identifier could be the database identifier or an object code.
      */
-    public $reference;
+    public $reference = null;
 
     /**
-     * @var string Specifies the CMS page path to resolve dynamic items to.
+     * @var string|null Specifies the CMS page path to resolve dynamic items to.
      */
-    public $cmsPage;
+    public $cmsPage = null;
 
     /**
      * @var boolean Used by the system internally.
@@ -69,11 +70,10 @@ class DefinitionItem
     ];
 
     /**
-     * Initializes a item from a data array.
-     * @param array $items Specifies the item data.
-     * @return Returns an array of the Item objects.
+     * Initializes an array of DefinitionItem objects from an array of arrays
+     * containing menu item data.
      */
-    public static function initFromArray($items)
+    public static function initFromArray(array $items): array
     {
         if (!is_array($items)) {
             return null;
@@ -93,14 +93,13 @@ class DefinitionItem
             $result[] = $obj;
         }
 
-        return new Collection($result);
+        return $result;
     }
 
     /**
      * Returns a list of registered item types
-     * @return array Returns an array of registered item types
      */
-    public function getTypeOptions()
+    public function getTypeOptions(): array
     {
         $result = ['url' => Lang::get('winter.sitemap::lang.item.url')];
         $apiResult = Event::fire('pages.menuitem.listTypes');
@@ -130,7 +129,7 @@ class DefinitionItem
         return []; // References are loaded client-side
     }
 
-    public static function getTypeInfo($type)
+    public static function getTypeInfo(string $type): array
     {
         $result = [];
         $apiResult = Event::fire('pages.menuitem.getTypeInfo', [$type]);
@@ -141,7 +140,7 @@ class DefinitionItem
                     continue;
                 }
 
-                foreach ($typeInfo as $name=>$value) {
+                foreach ($typeInfo as $name => $value) {
                     if ($name == 'cmsPages') {
                         $cmsPages = [];
 
@@ -168,9 +167,8 @@ class DefinitionItem
 
     /**
      * Converts the item data to an array
-     * @return array Returns the item data as array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $result = [];
 

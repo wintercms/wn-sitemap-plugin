@@ -1,6 +1,9 @@
-<?php namespace Winter\Sitemap;
+<?php
+
+namespace Winter\Sitemap;
 
 use Backend;
+use Backend\Models\UserRole;
 use System\Classes\PluginBase;
 use System\Classes\SettingsManager;
 
@@ -11,10 +14,8 @@ class Plugin extends PluginBase
 {
     /**
      * Returns information about this plugin.
-     *
-     * @return array
      */
-    public function pluginDetails()
+    public function pluginDetails(): array
     {
         return [
             'name'        => 'winter.sitemap::lang.plugin.name',
@@ -28,25 +29,22 @@ class Plugin extends PluginBase
 
     /**
      * Registers administrator permissions for this plugin.
-     *
-     * @return array
      */
-    public function registerPermissions()
+    public function registerPermissions(): array
     {
         return [
             'winter.sitemap.access_definitions' => [
                 'tab'   => 'winter.sitemap::lang.plugin.name',
                 'label' => 'winter.sitemap::lang.plugin.permissions.access_definitions',
+                'roles' => [UserRole::CODE_DEVELOPER],
             ],
         ];
     }
 
     /**
      * Registers settings for this plugin.
-     *
-     * @return array
      */
-    public function registerSettings()
+    public function registerSettings(): array
     {
         return [
             'definitions' => [
@@ -57,21 +55,6 @@ class Plugin extends PluginBase
                 'category'    => SettingsManager::CATEGORY_CMS,
                 'permissions' => ['winter.sitemap.access_definitions'],
             ]
-        ];
-    }
-
-    public function registerClassAliases()
-    {
-        /**
-         * To allow compatibility with plugins that extend the original RainLab.Sitemap plugin,
-         * this will alias those classes to use the new Winter.Sitemap classes.
-         */
-        return [
-            \Winter\Sitemap\Plugin::class                   => \RainLab\Sitemap\Plugin::class,
-            \Winter\Sitemap\Classes\DefinitionItem::class   => \RainLab\Sitemap\Classes\DefinitionItem::class,
-            \Winter\Sitemap\Controllers\Definitions::class  => \RainLab\Sitemap\Controllers\Definitions::class,
-            \Winter\Sitemap\FormWidgets\SitemapItems::class => \RainLab\Sitemap\FormWidgets\SitemapItems::class,
-            \Winter\Sitemap\Models\Definition::class        => \RainLab\Sitemap\Models\Definition::class,
         ];
     }
 }

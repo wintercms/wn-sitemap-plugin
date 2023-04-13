@@ -1,17 +1,18 @@
-<?php namespace Winter\Sitemap\Controllers;
+<?php
 
-use Url;
+namespace Winter\Sitemap\Controllers;
+
+use ApplicationException;
 use Backend;
-use Request;
-use Redirect;
+use Backend\Classes\Controller;
 use BackendMenu;
 use Cms\Classes\Theme;
-use Backend\Classes\Controller;
-use System\Classes\SettingsManager;
-use Winter\Sitemap\Models\Definition;
-use ApplicationException;
-use Winter\Sitemap\Classes\DefinitionItem as SitemapItem;
 use Exception;
+use Request;
+use System\Classes\SettingsManager;
+use Url;
+use Winter\Sitemap\Classes\DefinitionItem as SitemapItem;
+use Winter\Sitemap\Models\Definition;
 
 /**
  * Definitions Back-end Controller
@@ -19,12 +20,10 @@ use Exception;
 class Definitions extends Controller
 {
     public $implement = [
-        'Backend.Behaviors.FormController'
+        \Backend\Behaviors\FormController::class,
     ];
 
     public $requiredPermissions = ['winter.sitemap.access_definitions'];
-
-    public $formConfig = 'config_form.yaml';
 
     public function __construct()
     {
@@ -90,7 +89,7 @@ class Definitions extends Controller
         }
     }
 
-    public function onGetItemTypeInfo()
+    public function onGetItemTypeInfo(): array
     {
         $type = Request::input('type');
 
