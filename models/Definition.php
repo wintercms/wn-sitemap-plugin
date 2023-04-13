@@ -109,61 +109,35 @@ class Definition extends Model
                  * - This passes (string, DefinititionItem, string, Theme)
                  * - Winter.Pages passes (string, MenuItem, string, Theme)
                  */
-                $apiResult = Event::fire('pages.menuitem.resolveItem', [$item->type, $item, $currentUrl, $theme]);
-                if (!is_array($apiResult)) {
+                $menuItemInfo = Event::fire('pages.menuitem.resolveItem', [$item->type, $item, $currentUrl, $theme], true);
+                if (!is_array($menuItemInfo)) {
                     continue;
                 }
 
-                // @TODO: Don't provide a separate event here, just hook into pages.menuitem.resolveItem with a higher priority to return localized data if necessary
-
-                /**
-                 * @event winter.sitemap.processMenuItems
-                 * Provides an opportunity to modify menuItem data returned from the `pages.menuitem.resolveItem` event
-                 *
-                 * Example usage:
-                 *
-                 *   Event::listen('winter.sitemap.processMenuItems', function (DefinitionItem $item, string $currentUrl, Theme $theme, array $apiResult) {
-                 *      if ($item->type === 'cms-page') {
-                 *          return massageResults($item, $url, $theme, $apiResult);
-                 *      }
-                 *   });
-                 *
+                /*
+                 * Single item
                  */
-                $processedResult = Event::fire('winter.sitemap.processMenuItems', [$item, $currentUrl, $theme, $apiResult]);
-                if ($processedResult && is_array($processedResult)) {
-                    $apiResult = $processedResult;
+                if (isset($menuItemInfo['url'])) {
+                    $this->addItemToSet($item, $menuItemInfo);
                 }
 
-                foreach ($apiResult as $menuItemInfo) {
-                    if (!is_array($menuItemInfo)) {
-                        continue;
-                    }
-
-                    /*
-                     * Single item
-                     */
-                    if (isset($menuItemInfo['url'])) {
-                        $this->addItemToSet($item, $menuItemInfo);
-                    }
-
-                    /*
-                     * Multiple items
-                     */
-                    if (isset($menuItemInfo['items'])) {
-                        $menuItemIterator = function ($menuItems) use (&$menuItemIterator, $item) {
-                            foreach ($menuItems as $menuItem) {
-                                if (isset($menuItem['url'])) {
-                                    $this->addItemToSet($item, $menuItem);
-                                }
-
-                                if (isset($menuItem['items'])) {
-                                    $menuItemIterator($menuItem['items']);
-                                }
+                /*
+                 * Multiple items
+                 */
+                if (isset($menuItemInfo['items'])) {
+                    $menuItemIterator = function ($menuItems) use (&$menuItemIterator, $item) {
+                        foreach ($menuItems as $menuItem) {
+                            if (isset($menuItem['url'])) {
+                                $this->addItemToSet($item, $menuItem);
                             }
-                        };
 
-                        $menuItemIterator($menuItemInfo['items']);
-                    }
+                            if (isset($menuItem['items'])) {
+                                $menuItemIterator($menuItem['items']);
+                            }
+                        }
+                    };
+
+                    $menuItemIterator($menuItemInfo['items']);
                 }
             }
         }
