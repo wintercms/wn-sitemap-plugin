@@ -1,13 +1,13 @@
-<?php namespace Winter\Sitemap\FormWidgets;
+<?php
 
-use Winter\Sitemap\Classes\DefinitionItem as SitemapItem;
+namespace Winter\Sitemap\FormWidgets;
+
 use Backend\Classes\FormWidgetBase;
+use Lang;
+use Winter\Sitemap\Classes\DefinitionItem as SitemapItem;
 
 /**
- * Sitemap items widget.
- *
- * @package winter\backend
- * @author Alexey Bobkov, Samuel Georges
+ * SitemapItems FormWidget
  */
 class SitemapItems extends FormWidgetBase
 {
@@ -89,10 +89,8 @@ class SitemapItems extends FormWidgetBase
 
     /**
      * Returns the item reference description.
-     * @param \Winter\Pages\Classes\SitemapItem $item Specifies the sitemap item
-     * @return string 
      */
-    protected function getReferenceDescription($item)
+    protected function getReferenceDescription(SitemapItem $item): string
     {
         if ($this->typeListCache === false) {
             $this->typeListCache = $item->getTypeOptions();
@@ -103,7 +101,7 @@ class SitemapItems extends FormWidgetBase
         }
 
         if (isset($this->typeListCache[$item->type])) {
-            $result = trans($this->typeListCache[$item->type]);
+            $result = Lang::get($this->typeListCache[$item->type]);
 
             if ($item->type !== 'url') {
                 if (isset($this->typeInfoCache[$item->type]['references'])) {
@@ -115,7 +113,7 @@ class SitemapItems extends FormWidgetBase
             }
         }
         else {
-            $result = trans('winter.sitemap::lang.item.unknown_type');
+            $result = Lang::get('winter.sitemap::lang.item.unknown_type');
         }
 
         return $result;
@@ -144,7 +142,7 @@ class SitemapItems extends FormWidgetBase
 
         $result = $iterator($typeOptionList, null);
         if (!strlen($result)) {
-            $result = trans('winter.sitemap::lang.item.unnamed');
+            $result = Lang::get('winter.sitemap::lang.item.unnamed');
         }
 
         $result = preg_replace('|^\s+\/|', '', $result);
@@ -156,12 +154,12 @@ class SitemapItems extends FormWidgetBase
     {
         if (is_array($itemInfo)) {
             if (!array_key_exists('title', $itemInfo) || !strlen($itemInfo['title'])) {
-                return trans('winter.sitemap::lang.item.unnamed');
+                return Lang::get('winter.sitemap::lang.item.unnamed');
             }
 
             return $itemInfo['title'];
         }
 
-        return strlen($itemInfo) ? $itemInfo : trans('winter.sitemap::lang.item.unnamed');
+        return strlen($itemInfo) ? $itemInfo : Lang::get('winter.sitemap::lang.item.unnamed');
     }
 }
