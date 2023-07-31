@@ -161,7 +161,7 @@ class Definition extends Model
         $xml = new DOMDocument;
         $xml->encoding = 'UTF-8';
         $xss = $xml->createProcessingInstruction('xml-stylesheet',
-            'type="text/xsl" href="' . Url::asset('/plugins/winter/sitemap/assets/sitemap.xsl') . '"'
+            'type="text/xsl" href="' . Url::buildUrl(Url::current(), ['path' => 'sitemap.xsl']) . '"'
         );
         $xml->appendChild($xss);
 
