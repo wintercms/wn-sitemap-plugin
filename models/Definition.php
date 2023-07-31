@@ -227,6 +227,13 @@ class Definition extends Model
             return;
         }
 
+        // Ensure that only items with valid absolute URLs are added to the generated sitemap.
+        if (empty($itemInfo['url'])) {
+            return;
+        } else {
+            $itemInfo['url'] = Url::to($itemInfo['url']);
+        }
+
         $this->urlCount++;
 
         $urlElement = $xml->createElement('url');
