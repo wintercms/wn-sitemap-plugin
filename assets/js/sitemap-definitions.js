@@ -49,7 +49,7 @@
             return result
         }
 
-        data.options.data['itemData'] = iterator($items)
+        data.options.data['Definition'] = {items: iterator($items)};
     }
 
     $(document).ready(function(){

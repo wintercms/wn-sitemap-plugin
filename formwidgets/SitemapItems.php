@@ -75,14 +75,6 @@ class SitemapItems extends FormWidgetBase
         $this->addJs('js/sitemap-items-editor.js', 'core');
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getSaveValue($value)
-    {
-        return post('itemData');
-    }
-
     //
     // Methods for the internal use
     //
