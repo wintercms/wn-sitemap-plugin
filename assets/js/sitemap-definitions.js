@@ -49,7 +49,8 @@
             return result
         }
 
-        data.options.data['itemData'] = iterator($items)
+        const fieldName = $('div[data-control=sitemap-item-editor]').data('fieldName')
+        data.options.data[fieldName] = iterator($items);
     }
 
     $(document).ready(function(){
