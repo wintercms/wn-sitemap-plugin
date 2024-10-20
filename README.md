@@ -1,6 +1,26 @@
-# Sitemap generator plugin
+# Sitemap Plugin
 
-This plugin will a generate `sitemap.xml` file in Winter CMS based on desired CMS pages and others.
+Dynamically generates `sitemap.xml` files in Winter CMS based user-configured settings.
+
+Supports:
+- Single sitemap definition per theme
+- Sitemaps are automatically styled for human consumption using the default `sitemap.xsl` file.
+- Supports item types as registered by [Winter.Pages](https://github.com/wintercms/wn-pages-plugin) and compatible plugins (Static URL, CMS Page, Single Record, All Records in type, etc)
+- Supports custom sitemap item types
+
+## Installation
+
+This plugin is available for installation via [Composer](http://getcomposer.org/).
+
+```bash
+composer require winter/wn-sitemap-plugin
+```
+
+After installing the plugin you will need to run the migrations and (if you are using a [public folder](https://wintercms.com/docs/develop/docs/setup/configuration#using-a-public-folder)) [republish your public directory](https://wintercms.com/docs/develop/docs/console/setup-maintenance#mirror-public-files).
+
+```bash
+php artisan migrate
+```
 
 ## Viewing the sitemap
 
