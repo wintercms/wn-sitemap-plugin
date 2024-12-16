@@ -19,3 +19,8 @@
     - "Add composer replace config."
     - "New events to allow extension."
     - "Fire 'pages.menuItem.resolveItem' as a halting event."
+"2.1.0":
+    - "Fix saving sitemap definitions"
+    - "Fix migrations on Laravel 9+"
+    - "Invalid URLs are no longer added to the generated sitemap"
+    - "Improve resolving the sitemap.xsl stylesheet"
