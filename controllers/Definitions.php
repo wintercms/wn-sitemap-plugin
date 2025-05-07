@@ -59,8 +59,6 @@ class Definitions extends Controller
      */
     public function update($recordId = null, $context = null)
     {
-        $this->bodyClass = 'compact-container';
-
         try {
             if (!$editTheme = Theme::getEditTheme()) {
                 throw new ApplicationException('Unable to find the active theme.');
