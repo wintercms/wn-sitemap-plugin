@@ -3,9 +3,8 @@
 # ===================================
 
 fields:
-    _form_sitemap_url:
+    form_sitemap_url:
         type: partial
-        path: form_sitemap_url
         context: update
 
 tabs:
