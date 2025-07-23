@@ -2,9 +2,13 @@
 #  Form Field Definitions
 # ===================================
 
+fields:
+    form_sitemap_url:
+        type: partial
+        context: update
+
 tabs:
     stretch: true
-    cssClass: tabs-no-inset
 
     fields:
         items:
