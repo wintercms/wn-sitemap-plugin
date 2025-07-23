@@ -24,3 +24,4 @@
     - "Fix migrations on Laravel 9+"
     - "Invalid URLs are no longer added to the generated sitemap"
     - "Improve resolving the sitemap.xsl stylesheet"
+"2.1.1": "Fix saving sitemap definitions"
