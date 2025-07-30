@@ -15,7 +15,7 @@
         /*
          * Handle the sitemap saving
          */
-        $(document).on('oc.beforeRequest', '#sitemapForm', function(e, data) {
+        $(document).on('oc.beforeRequest', '#Form', function(e, data) {
             return self.onSaveSitemapItems(this, e, data)
         })
 
