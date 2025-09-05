@@ -33,7 +33,7 @@ class Definitions extends Controller
         SettingsManager::setContext('Winter.Sitemap', 'definitions');
 
         $this->addJs('/modules/backend/assets/js/winter.treeview.js', 'core');
-        $this->addJs('/plugins/winter/sitemap/assets/js/sitemap-definitions.js');
+        $this->addJs('/plugins/winter/sitemap/assets/js/sitemap-definitions.js', 'Winter.Sitemap');
     }
 
     /**
