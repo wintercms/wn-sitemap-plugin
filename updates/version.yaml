@@ -26,3 +26,4 @@
     - "Improve resolving the sitemap.xsl stylesheet"
 "2.1.1": "Fix saving sitemap definitions"
 "2.2.0": "Use new default backend views from Winter v1.2.8+"
+"2.2.1": "Fix form not saving"
