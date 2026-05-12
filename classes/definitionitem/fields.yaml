@@ -34,6 +34,7 @@ fields:
         type: dropdown
         emptyOption: winter.sitemap::lang.item.omitted
         options:
+            '0.0': '0.0'
             '0.1': '0.1'
             '0.2': '0.2'
             '0.3': '0.3'
