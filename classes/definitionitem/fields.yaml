@@ -32,6 +32,7 @@ fields:
         span: left
         label: winter.sitemap::lang.item.priority
         type: dropdown
+        emptyOption: winter.sitemap::lang.item.omitted
         options:
             '0.1': '0.1'
             '0.2': '0.2'
@@ -48,6 +49,7 @@ fields:
         span: right
         label: winter.sitemap::lang.item.changefreq
         type: dropdown
+        emptyOption: winter.sitemap::lang.item.omitted
         options:
             always: winter.sitemap::lang.item.always
             hourly: winter.sitemap::lang.item.hourly

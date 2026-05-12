@@ -49,16 +49,9 @@ class SitemapItems extends FormWidgetBase
     {
         $sitemapItem = new SitemapItem;
 
+        $this->vars['emptyItem'] = $sitemapItem;
         $this->vars['itemProperties'] = json_encode($sitemapItem->fillable);
         $this->vars['items'] = $this->model->items;
-
-        $emptyItem = new SitemapItem;
-        $emptyItem->type = 'url';
-        $emptyItem->url = '/';
-        $emptyItem->changefreq = 'always';
-        $emptyItem->priority = '0.5';
-
-        $this->vars['emptyItem'] = $emptyItem;
 
         $widgetConfig = $this->makeConfig('$/winter/sitemap/classes/definitionitem/fields.yaml');
         $widgetConfig->model = $sitemapItem;
