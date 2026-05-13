@@ -240,8 +240,12 @@ class Definition extends Model
 
         $urlElement->appendChild($xml->createElement('loc', $itemInfo['url']));
         $urlElement->appendChild($xml->createElement('lastmod', $itemInfo['lastModified']));
-        $urlElement->appendChild($xml->createElement('changefreq', $item->changefreq));
-        $urlElement->appendChild($xml->createElement('priority', $item->priority));
+        if (!empty($item->changefreq)) {
+            $urlElement->appendChild($xml->createElement('changefreq', $item->changefreq));
+        }
+        if (is_numeric($item->priority)) {
+            $urlElement->appendChild($xml->createElement('priority', $item->priority));
+        }
 
         $urlSet->appendChild($urlElement);
 

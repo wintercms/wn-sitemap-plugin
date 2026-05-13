@@ -13,6 +13,7 @@ return [
         'location' => 'Location:',
         'priority' => 'Priority',
         'changefreq' => 'Change frequency',
+        'omitted' => 'Omitted',
         'always' => 'always',
         'hourly' => 'hourly',
         'daily' => 'daily',
@@ -45,5 +46,5 @@ return [
     ],
     'definition' => [
         'not_found' => 'No sitemap definition was found. Try creating one first.'
-    ]
+    ],
 ];
