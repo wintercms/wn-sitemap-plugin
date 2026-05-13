@@ -26,11 +26,9 @@ return [
         'allow_nested_items_comment' => 'A kapcsolódó lapok automatikus listázása, amennyiben támogatott ez a funkció.',
         'url' => 'Webcím',
         'reference' => 'Hivatkozás',
-        'title_required' => 'A cím megadása kötelező',
         'unknown_type' => 'Ismeretlen elem típus',
         'unnamed' => 'Névtelen elem',
         'add_item' => 'Hozzáadás',
-        'new_item' => 'Új elem',
         'cms_page' => 'Oldal',
         'cms_page_comment' => 'Válassza ki, hogy melyik oldal tartozik a fenti hivatkozáshoz.',
         'reference_required' => 'A hivatkozó elem megadása kötelező.',
@@ -39,9 +37,6 @@ return [
         'page' => 'Oldal',
         'check' => 'Ellenőrzés',
         'definition' => 'Elemek',
-        'save_definition' => 'Mentés...',
-        'load_indicator' => 'Visszaállítás folyamatban...',
-        'empty_confirm' => 'Állítsuk vissza üres állapotba?'
     ],
     'definition' => [
         'not_found' => 'Nincs elkészítve az oldaltérkép. Adjon hozzá legalább egy elemet.'
