@@ -243,7 +243,7 @@ class Definition extends Model
         if (!empty($item->changefreq)) {
             $urlElement->appendChild($xml->createElement('changefreq', $item->changefreq));
         }
-        if (!is_numeric($item->priority)) {
+        if (is_numeric($item->priority)) {
             $urlElement->appendChild($xml->createElement('priority', $item->priority));
         }
 
