@@ -28,3 +28,7 @@
 "2.2.0": "Use new default backend views from Winter v1.2.8+"
 "2.2.1": "Fix form not saving"
 "2.2.2": "Fix caching issue with the js asset"
+"2.3.0":
+    - "Make the priority and changefreq values optional on sitemap items"
+    - "Remove unused strings from the language files"
+    - "Add Italian translation"
