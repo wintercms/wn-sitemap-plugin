@@ -238,7 +238,9 @@ class Definition extends Model
 
         $urlElement = $xml->createElement('url');
 
-        $urlElement->appendChild($xml->createElement('loc', $itemInfo['url']));
+        // A text node, not createElement()'s value argument: that isn't escaped, so a query string's
+        // `&` is read as an entity reference and dropped (`?a=1&b=2` became `?a=1b=2`).
+        $urlElement->appendChild($xml->createElement('loc'))->appendChild($xml->createTextNode($itemInfo['url']));
         $urlElement->appendChild($xml->createElement('lastmod', $itemInfo['lastModified']));
         if (!empty($item->changefreq)) {
             $urlElement->appendChild($xml->createElement('changefreq', $item->changefreq));
